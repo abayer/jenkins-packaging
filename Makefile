@@ -22,9 +22,9 @@ clean:
 setup:
 	bash -ex -c 'for f in */setup.sh; do $$f; done'
 
-package: war msi osx deb rpm suse
+package: war deb rpm suse
 
-publish: war.publish msi.publish osx.publish deb.publish rpm.publish suse.publish
+publish: war.publish  deb.publish rpm.publish suse.publish
 
 test: deb.test rpm.test suse.test
 
