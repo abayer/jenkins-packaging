@@ -23,7 +23,7 @@ export SUSE_WEBDIR=${TESTDIR}/opensuse${RELEASELINE}
 export  DEB_WEBDIR=${TESTDIR}/debian${RELEASELINE}
 
 # URL to the aforementioned webdir.
-WEBSERVER=test.pkg.jenkins-ci.org:9200
+WEBSERVER=localhost:9200
 export  RPM_URL=http://${WEBSERVER}/redhat${RELEASELINE}
 export SUSE_URL=http://${WEBSERVER}/opensuse${RELEASELINE}
 export  DEB_URL=http://${WEBSERVER}/debian${RELEASELINE}
