@@ -93,7 +93,7 @@ test.local.setup:
 	# start a test Apache server that acts as package server
 	# we'll refer to this as 'test.pkg.jenkins-ci.org'
 	@mkdir -p ${TESTDIR} || true
-	docker run --rm -t -i -p 9200:80 -v ${TESTDIR}:/var/www/html fedora/apache
+	docker run -d --rm -t -i -p 9200:80 -v ${TESTDIR}:/var/www/html fedora/apache
 %.test.up:
 	# run this target for to set up the test target VM
 	cd test; vagrant up --provision-with "" $*
