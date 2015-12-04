@@ -1,3 +1,8 @@
+# Defaults for PKG_HOST, PKG_TEST_DIR and PKG_PORt
+PKG_HOST:=localhost
+PKG_TEST_DIR:=/tmp/pkg.jenkins-ci.org
+PKG_PORT:=9200
+
 # refers to the definition of a release target
 BRAND:=./branding/test.mk
 include ${BRAND}

@@ -6,10 +6,10 @@
 export JENKINS_URL=https://cloudbees.ci.cloudbees.com/
 
 # the host to publish bits to
-export PKGSERVER=${USER}@${PKG_HOST:-localhost}
+export PKGSERVER=${USER}@${PKG_HOST}
 
 # where to put binary files
-export TESTDIR=${PKG_TEST_DIR:-/tmp/pkg.jenkins-ci.org}
+export TESTDIR=${PKG_TEST_DIR}
 export WARDIR=${TESTDIR}/war${RELEASELINE}
 export MSIDIR=${TESTDIR}/windows${RELEASELINE}
 export OSXDIR=${TESTDIR}/osx${RELEASELINE}
@@ -23,7 +23,7 @@ export SUSE_WEBDIR=${TESTDIR}/opensuse${RELEASELINE}
 export  DEB_WEBDIR=${TESTDIR}/debian${RELEASELINE}
 
 # URL to the aforementioned webdir.
-WEBSERVER=${PKG_HOST:-test.pkg.jenkins-ci.org}:${PKG_PORT:-9200}
+WEBSERVER=${PKG_HOST}:${PKG_PORT}
 export  RPM_URL=http://${WEBSERVER}/redhat${RELEASELINE}
 export SUSE_URL=http://${WEBSERVER}/opensuse${RELEASELINE}
 export  DEB_URL=http://${WEBSERVER}/debian${RELEASELINE}
