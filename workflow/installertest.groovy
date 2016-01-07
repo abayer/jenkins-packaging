@@ -9,7 +9,7 @@ String convertImageNameToString(String imageName, String append="") {
  */
 @NonCPS
 def getComponentsFromArtifactUrl(String url) {
-    def pattern = /^artifact:\/\/([\/\w-_ ]+)\/(\d+)\/{0,1}#([\/\w\.]+)$/
+    def pattern = /^artifact:\/\/([\/\w-_\. ]+)\/(\d+)\/{0,1}#([\/\w-_\.]+)$/
     def matcher = url =~ pattern
     if (matcher) {
         return [
