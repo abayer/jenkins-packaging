@@ -23,17 +23,47 @@ String jenkinsPort = (binding.hasVariable('jenkinsPort')) ? jenkinsPort : '8080'
 
 // Set up
 String scriptPath = 'packaging-docker/installtests'
-String checkCmd = "sudo $scriptPath/service-check.sh $artifactName $jenkinsPort"
 
 // Core tests represent the basic supported linuxes, extended tests build out coverage further
 def coreTests = []
 def extendedTests = []
-coreTests[0]=["sudo-ubuntu:14.04",  ["sudo $scriptPath/debian.sh installers/deb/*.deb", checkCmd]]
-coreTests[1]=["sudo-centos:6",      ["sudo $scriptPath/centos.sh installers/rpm/*.rpm", checkCmd]]
-coreTests[2]=["sudo-opensuse:13.2", ["sudo $scriptPath/suse.sh installers/suse/*.rpm", checkCmd]]
-extendedTests[0]=["sudo-debian:wheezy", ["sudo $scriptPath/debian.sh installers/deb/*.deb", checkCmd]]
-extendedTests[1]=["sudo-centos:7",      ["sudo $scriptPath/centos.sh installers/rpm/*.rpm", checkCmd]]
-extendedTests[2]=["sudo-ubuntu:15.10",  ["sudo $scriptPath/debian.sh installers/deb/*.deb", checkCmd]]
+coreTests[0]=["sudo-ubuntu:14.04",  
+              ["ubuntu-14.04",
+               [
+                       ["debian.sh", "installers/deb/*.deb"],
+                       ["service-check.sh", "${artifactName} ${jenkinsPort}"]
+               ]]]
+coreTests[1]=["sudo-centos:6",  
+              ["centos-6",
+               [
+                       ["centos.sh", "installers/rpm/*.rpm"],
+                       ["service-check.sh", "${artifactName} ${jenkinsPort}"]
+               ]]]
+coreTests[2]=["sudo-opensuse:13.2",  
+              ["opensuse-13.2",
+               [
+                       ["suse.sh", "installers/suse/*.rpm"],
+                       ["service-check.sh", "${artifactName} ${jenkinsPort}"]
+               ]]]
+extendedTests[0]=["sudo-debian:wheezy",  
+                  ["debian-wheezy",
+                   [
+                           ["debian.sh", "installers/deb/*.deb"],
+                           ["service-check.sh", "${artifactName} ${jenkinsPort}"]
+                   ]]]
+extendedTests[1]=["sudo-centos:7",
+                  ["centos-7",
+                   [
+                           ["centos.sh", "installers/rpm/*.rpm"],
+                           ["service-check.sh", "${artifactName} ${jenkinsPort}"]
+                   ]]]
+extendedTests[2]=["sudo-ubuntu:15.10",
+                  ["ubuntu-15.10",
+                   [
+                           ["debian.sh", "installers/deb/*.deb"],
+                           ["service-check.sh", "${artifactName} ${jenkinsPort}"]
+                   ]]]
+
 
 node(dockerLabel) {
     stage "Load Lib"
@@ -60,6 +90,6 @@ node(dockerLabel) {
     
     stage 'Run Installation Tests'
     String[] stepNames = ['install', 'servicecheck']
-    flow.execute_install_testset(coreTests, stepNames)
-    flow.execute_install_testset(extendedTests, stepNames)
+    flow.execute_install_testset(scriptPath, coreTests, stepNames)
+    flow.execute_install_testset(scriptPath, extendedTests, stepNames)
 }

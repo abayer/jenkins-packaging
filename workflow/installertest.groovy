@@ -92,13 +92,17 @@ def run_shell_test(String imageName, def shellCommands, def stepNames=null) {
           // Second, the sh workflow step often will use the default posix shell
           // The default posix shell does not support pipefail, so we have to invoke bash to get it
           
-          String argument = 'bash -c \'set -o pipefail; '+cmd+" | tee \"testresults/$fileName-$name"+'.log'+'" \''
+          String argument = 'bash -c \''+cmd+" | tee \"testresults/$fileName-$name"+'.log'+'" \''
           sh argument
         }
       } catch (Exception ex) {
+          // And archive the test results once we're done.
+          step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: "results/*.xml"])
         archive("testresults/$fileName"+'*.log')
         throw ex
       }
+      // And archive the test results once we're done.
+      step([$class: 'JUnitResultArchiver', keepLongStdio: true, testResults: "results/*.xml"])
       archive("testresults/$fileName"+'*.log')
     }
   } 
@@ -109,25 +113,45 @@ def run_shell_test(String imageName, def shellCommands, def stepNames=null) {
 * They will need sudo-able containers to install
 * @param stepNames Names for each step (if not supplied, the index of the step will be used)
 */
-def execute_install_testset(def coreTests, def stepNames=null) {
+def execute_install_testset(def scriptPath, def coreTests, def stepNames=null) {
   // Within this node, execute our docker tests
   def parallelTests = [:]
-  sh 'rm -rf testresults'
+  sh 'sudo rm -rf testresults'
+  sh 'sudo rm -rf results'
   sh 'mkdir testresults'
+  sh 'mkdir results'
   for (int i=0; i<coreTests.size(); i++) {
     def imgName = coreTests[i][0]
-    def tests = coreTests[i][1]
+    def tests = scriptsForDistro(coreTests[i][1][0], scriptPath, coreTests[i][1][1])
     parallelTests[imgName] = {
       try {
-       run_shell_test(imgName, tests, stepNames)
+          run_shell_test(imgName, tests, stepNames)
       } catch(Exception e) {
         // Keep on trucking so we can see the full failures list
         echo "$e"
-        error("Test for $imgName failed")
+        echo("Test for $imgName failed")
       }
+
     }
   }
   parallel parallelTests
+}
+
+def scriptsForDistro(String distro, String scriptPath, scriptsAndArgs) {
+    def scripts = []
+
+    for (int i = 0; i < scriptsAndArgs.size(); i++) {
+        def scriptAndArgs = scriptsAndArgs[i]
+        scripts << shellScriptForDistro(distro, scriptPath, scriptAndArgs[0], scriptAndArgs[1])
+    }
+
+    return scripts
+}
+
+String shellScriptForDistro(String distro, String scriptPath, String baseScript, String args) {
+    String newPath = "${scriptPath}/${distro}-${baseScript}"
+    sh "cp ${scriptPath}/${baseScript} ${newPath}"
+    return "sudo ${newPath} ${args}"
 }
 
 return this
