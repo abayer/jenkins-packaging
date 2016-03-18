@@ -206,6 +206,7 @@ def runShellTest(String imageName, def shellCommands, def stepNames=null) {
           // The default posix shell does not support pipefail, so we have to invoke bash to get it
           
           String argument = "${cmd} | tee \"testresults/${fileName}-${name}.log\""
+          echo "ACTUAL TEST ARG: ${argument}"
           sh argument
         }
       } catch (Exception ex) {
