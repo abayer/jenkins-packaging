@@ -289,7 +289,7 @@ def executeInstallTestset(List testOSList, String scriptPath, String artifactNam
 *  @param artifactName jenkins artifactName
 *  @param jenkinsPort port to use for speaking to jenkins (default 8080)
 */
-void runJenkinsInstallTests(String packagingTestBranch='master', 
+void runJenkinsInstallTests(String packagingTestBranch='sh2ju-quoting', 
     String artifactName='jenkins', String jenkinsPort='8080') {
   // Set up
   String scriptPath = 'packaging-docker/installtests'
@@ -298,7 +298,7 @@ void runJenkinsInstallTests(String packagingTestBranch='master',
   // Run the actual work
   sh 'rm -rf packaging-docker'
   dir('packaging-docker') {
-    git branch: packagingTestBranch, url: 'https://github.com/jenkinsci/packaging.git'
+    git branch: packagingTestBranch, url: 'https://github.com/abayer/jenkins-packaging.git'
   }
   
   // Build the sudo dockerfiles
@@ -318,7 +318,7 @@ void runJenkinsInstallTests(String packagingTestBranch='master',
 *  @param rpmUrl, suseUrl, debUrl:  artifact URLs to fetch packes from
 */
 void fetchAndRunJenkinsInstallerTest(String dockerNodeLabel, String rpmUrl, String suseUrl, String debUrl,
-  String packagingTestBranch='master', String artifactName='jenkins', String jenkinsPort='8080') {
+  String packagingTestBranch='sh2ju-quoting', String artifactName='jenkins', String jenkinsPort='8080') {
 
   timestampedNode(dockerNodeLabel) {
     stage 'Fetch Installer'

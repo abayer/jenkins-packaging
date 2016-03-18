@@ -17,7 +17,7 @@
 // @stringparameter (optional) artifactName - (jenkins artifactname, defaults to 'jenkins')
 
 // Basic parameters
-String packagingTestBranch = (binding.hasVariable('packagingTestBranch')) ? packagingTestBranch : 'master'
+String packagingTestBranch = (binding.hasVariable('packagingTestBranch')) ? packagingTestBranch : 'sh2ju-quoting'
 String artifactName = (binding.hasVariable('artifactName')) ? artifactName : 'jenkins'
 String jenkinsPort = (binding.hasVariable('jenkinsPort')) ? jenkinsPort : '8080'
 
@@ -25,7 +25,7 @@ node(dockerLabel) {
     stage "Load Lib"
     sh 'rm -rf workflowlib'
     dir ('workflowlib') {
-        git branch: packagingTestBranch, url: 'https://github.com/jenkinsci/packaging.git'
+        git branch: packagingTestBranch, url: 'https://github.com/abayer/jenkins-packaging.git'
         flow = load 'workflow/installertest.groovy'
     }
 }
